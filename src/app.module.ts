@@ -8,6 +8,8 @@ import { AIModule } from './modules/ai/ai.module';
 import { VectorDBModule } from './modules/vector-db/vector-db.module';
 import { AgentsModule } from './modules/agents/agents.module';
 import { HealthModule } from './modules/health/health.module';
+import { ReportsModule } from './modules/reports/reports.module';
+import { TrainingModule } from './modules/training/training.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { HealthModule } from './modules/health/health.module';
     VectorDBModule,
     AgentsModule,
     HealthModule,
+    ReportsModule,
+    TrainingModule,
   ],
 })
 export class AppModule {}

@@ -1,5 +1,17 @@
-import { Controller, Post, Get, Body, Param, UseGuards, Req } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  UseGuards,
+  Req,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { ChatService } from './chat.service';
 import { ChatMessageDto } from './dto/chat-message.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -43,5 +55,40 @@ export class ChatController {
     @Req() req: any,
   ) {
     return this.chatService.sendMessage(id, req.user.userId, chatMessageDto.message);
+  }
+
+  @Post(':id/report')
+  @ApiOperation({ summary: 'Upload Excel and generate an executive report PDF' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+        file: { type: 'string', format: 'binary' },
+      },
+      required: ['file'],
+    },
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  async generateReport(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Body('message') message: string,
+    @Req() req: any,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Excel file is required.');
+    }
+
+    const allowedExtensions = ['.xlsx', '.xls'];
+    const lowerName = file.originalname.toLowerCase();
+    const isExcel = allowedExtensions.some((ext) => lowerName.endsWith(ext));
+
+    if (!isExcel) {
+      throw new BadRequestException('Only Excel files (.xlsx, .xls) are supported.');
+    }
+
+    return this.chatService.generateReportFromExcel(id, req.user.userId, message, file);
   }
 }

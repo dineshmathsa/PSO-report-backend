@@ -14,6 +14,9 @@ build/
 # LanceDB embedded vector store (local runtime data)
 data/lancedb/
 
+# Generated report PDFs (runtime output)
+data/generated-reports/
+
 # Logs
 logs
 *.log

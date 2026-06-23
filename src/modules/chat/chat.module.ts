@@ -5,13 +5,13 @@ import { ChatService } from './chat.service';
 import { ChatRepository } from './chat.repository';
 import { Chat, ChatSchema } from './schemas/chat.schema';
 import { AIModule } from '../ai/ai.module';
-import { AgentsModule } from '../agents/agents.module';
+import { ReportsModule } from '../reports/reports.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
     AIModule,
-    AgentsModule,
+    ReportsModule,
   ],
   controllers: [ChatController],
   providers: [ChatService, ChatRepository],

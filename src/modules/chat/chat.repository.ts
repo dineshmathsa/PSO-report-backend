@@ -59,4 +59,21 @@ export class ChatRepository {
       )
       .exec();
   }
+
+  async saveReportContext(
+    chatId: string,
+    userId: string,
+    reportContext: Chat['reportContext'],
+  ): Promise<ChatDocument | null> {
+    return this.chatModel
+      .findOneAndUpdate(
+        {
+          _id: new Types.ObjectId(chatId),
+          userId: new Types.ObjectId(userId),
+        },
+        { $set: { reportContext } },
+        { new: true },
+      )
+      .exec();
+  }
 }
